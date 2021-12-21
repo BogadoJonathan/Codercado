@@ -1,0 +1,25 @@
+* {  
+    margin: 0;  
+    padding: 0;  
+    box-sizing: border-box;
+    }
+
+    #listProductos{
+        display: flex;
+        justify-content: center;
+    }
+
+    #cajaBotones{
+        display: flex;
+        justify-content: center;
+        padding: 0 20% 0 20%;
+    }
+
+    #titulo{
+        display: flex;
+        justify-content: center;
+    }
+
+    #listCarrito{
+        padding: 0 20% 0 20%;
+    }
