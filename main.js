@@ -28,11 +28,23 @@ productos.push(new Producto(6,"mochila",1000,"mochila.jpg"));
 productos.push(new Producto(7,"remera manga corta",500,"remera.jpg"));
 productos.push(new Producto(8,"taza",300,"taza.jpg"));
 
+const carrito = []
 
 let listProductos = document.getElementById("listProductos")
 let listCarrito = document.getElementById("listCarrito")
+if(localStorage.getItem('carrito')==null){
+    localStorage.setItem('carrito', JSON.stringify([]))
+}
+else{
+    const almacenados = JSON.parse(localStorage.getItem('carrito'))
+    for(const objeto of almacenados){
+        console.log(objeto.id)
+        carrito.push(productos.find(x => x.id == objeto.id) )
+    }
+    imprimirCarrito()
+}
 
-const carrito = []
+
 let opcion = 0
 let continuar = true
 
@@ -56,6 +68,7 @@ function imprimirEnDOM(){
     productos.forEach((productosArray,indice) =>{
         document.getElementById(`boton${productosArray.id}`).addEventListener('click',()=>{
             carrito.push(productos[indice])
+            localStorage.setItem('carrito',JSON.stringify(carrito))
             imprimirCarrito()
         })
     })
@@ -65,6 +78,7 @@ function imprimirEnDOM(){
 function imprimirCarrito(){
     listCarrito.innerHTML=``
     listCarrito.innerHTML=`<ul class="list-group">`
+    total=0
     carrito.forEach((carritoArray)=>{
         listCarrito.innerHTML+=`
         <li class="list-group-item">${carritoArray.imprimir()}</li>
@@ -121,55 +135,3 @@ function ordenarPorPrecio(){
         }
     });
 }
-
-
-
-
-// do{     
-//     opcion = parseInt(prompt(`
-//     Ingresa los productos que deseas llevar: 
-//     6: Ordenar por precio
-//     7: Ordenar por descripcion`))
-
-//     if(opcion<1 || opcion>7){
-//         alert("Debe ingresar un numero valido")
-//         continue
-//     }
-
-//     switch(opcion){
-//         case 1: 
-//             productos[0].sumarAlCarrito()
-//             break;
-//         case 2: 
-//             productos[1].sumarAlCarrito()
-//             break;
-//         case 3: 
-//             productos[2].sumarAlCarrito()
-//             break;
-//         case 4: 
-//             productos[3].sumarAlCarrito()
-//             break;
-//         case 5: 
-//             productos[4].sumarAlCarrito()
-//             break;
-//         case 6:
-//             ordenarPorPrecio();
-//             continue;
-//         case 7:
-//             ordenarPordescripcion();
-//             continue;
-
-//     }
-
-//     opcion = prompt("¿desea agregar otro producto?: 's' para seguir, cualquier tecla para salir")
-//     if(opcion=='s' || opcion=='S'){
-//         continuar=true
-//     }
-//     else{
-//         continuar=false
-//     }
-
-// }while(continuar)
-
-// resultado()
-
