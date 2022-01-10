@@ -58,7 +58,7 @@ function imprimirEnDOM() {
                  <p class="card-text">$${productosArray.precio}</p>
                  <a href="#" id="boton${productosArray.id}" class="btn btn-primary">Agregar +</a>
         </div>
-    </div>`);
+    </div>`)
     })
 
         productos.forEach((productosArray, indice) => {
@@ -69,7 +69,23 @@ function imprimirEnDOM() {
             })
         })
 
-    }
+};
+
+$('.btn-light').click(() => {
+    $('body').removeClass('modoDark')
+    $('body').addClass('modoLight')
+    $('.btn-light').hide()
+    $('.btn-dark').show()
+
+});
+
+$('.btn-dark').click(() => {
+    $('body').removeClass('modoLight')
+    $('body').addClass('modoDark')
+    $('.btn-light').show()
+    $('.btn-dark').hide()
+});
+
 
 function imprimirCarrito() {
             $('#listCarrito').empty()
@@ -77,16 +93,29 @@ function imprimirCarrito() {
                 `<ul class="list-group">`
             )
             total = 0
-            carrito.forEach((carritoArray) => {
+            carrito.forEach((carritoArray, indice) => {
                 $('#listCarrito').append(`
-                <li class="list-group-item">${carritoArray.imprimir()}</li>
+                <li class="list-group-item">${carritoArray.imprimir()} <a href="#" id="delete${indice}" class="btn btn-danger">x</a></li>
                 `)
                 carritoArray.sumarAlCarrito()
+
+
+                $('#listCarrito li').animate({
+                    fontSize: "1.5em",
+                    },"slow")
             })
             $('#listCarrito').append(`
             </ul>
             <h2>Tu total es: $${total}</h2>
             `)
+
+            carrito.forEach((carritoArray, indice) => {
+                $('#delete' + indice).click(() => {
+                    carrito.splice([indice],1)
+                    localStorage.setItem('carrito', JSON.stringify(carrito))
+                    imprimirCarrito()
+                })
+            })
         }
 
 let btnDescripcion = document.getElementById("ordenDescripcion")

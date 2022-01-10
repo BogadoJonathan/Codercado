@@ -22,4 +22,27 @@
 
     #listCarrito{
         padding: 0 20% 0 20%;
+        
     }
+
+    .modoDark{
+        background-color: black;
+        color: white;
+    }
+
+    .modoDark .card{
+        background-color: black;
+        
+    }
+
+    .modoDark #listCarrito li{
+        background-color: black;
+        color: rgb(218, 218, 218);
+    }
+    .modoLight{
+        background-color: whitesmoke;
+        color: black;
+    }
+
+
+    
