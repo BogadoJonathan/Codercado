@@ -35,6 +35,10 @@
         
     }
 
+    .modoDark .modal{
+        color: black;
+    }
+
     .modoDark #listCarrito li{
         background-color: black;
         color: rgb(218, 218, 218);
@@ -43,6 +47,20 @@
         background-color: whitesmoke;
         color: black;
     }
+
+    nav{
+        display: flex;
+        justify-content: space-around;
+       
+    }
+    
+    #contenidoModal{
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+
 
 
     

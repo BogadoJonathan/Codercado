@@ -86,6 +86,31 @@ $('.btn-dark').click(() => {
     $('.btn-dark').hide()
 });
 
+$('#contacto').click(() =>{ 
+    $.getJSON("https://randomuser.me/api/", function(respuesta, estado){
+        if(estado == "success"){
+            let data = respuesta
+            console.log(data.results[0].gender)
+            $('#contenidoModal').empty()
+            $('#contenidoModal').append(`
+                    
+                        <img src="${data.results[0].picture.large}" class="rounded-circle mr-3" alt="...">
+                        <div class="media-body">
+                            <h5 class="mt-0">Hola soy ${data.results[0].name.first} ${data.results[0].name.last}</h5>
+                            Te dejo mi número de contacto: <a href="tel:${data.results[0].cell}">${data.results[0].cell}</a>.
+                        </div>
+
+            `)
+        }
+    })
+    $('.modal').fadeIn()
+    $('main').hide()
+})
+
+$('.btn-close').click(() =>{
+    $('.modal').fadeOut()
+    $('main').show()
+})
 
 function imprimirCarrito() {
             $('#listCarrito').empty()
