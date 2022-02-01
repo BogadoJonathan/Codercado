@@ -1,0 +1,50 @@
+[
+    {
+        "id": 1,
+        "descripcion": "Botella acero inoxidable",
+        "precio": 700.00,
+        "image": "botella.jpg"
+    },
+    {
+        "id": 2,
+        "descripcion": "Antifaz para dormir x2",
+        "precio": 400.00,
+        "image": "antifaz.jpg"
+    },
+    {
+        "id": 3,
+        "descripcion": "Buzo",
+        "precio": 1000.00,
+        "image": "buzo.jpg"
+    },
+    {
+        "id": 4,
+        "descripcion": "funda para iphone",
+        "precio": 800.00,
+        "image": "funda.jpg"
+    },
+    {
+        "id": 5,
+        "descripcion": "gorro",
+        "precio": 500.00,
+        "image": "gorro.jpeg"
+    },
+    {
+        "id": 6,
+        "descripcion": "mochila",
+        "precio": 1000.00,
+        "image": "mochila.jpg"
+    },
+    {
+        "id": 7,
+        "descripcion": "remera manga corta",
+        "precio": 500.00,
+        "image": "remera.jpg"
+    },
+    {
+        "id": 8,
+        "descripcion": "taza",
+        "precio": 300.00,
+        "image": "taza.jpg"
+    }
+]

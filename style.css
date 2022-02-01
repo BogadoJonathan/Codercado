@@ -7,12 +7,14 @@
     #listProductos{
         display: flex;
         justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
     }
 
     #cajaBotones{
         display: flex;
         justify-content: center;
-        padding: 0 20% 0 20%;
+        padding: 3% 20% 3% 20%;
     }
 
     #titulo{
@@ -21,7 +23,7 @@
     }
 
     #listCarrito{
-        padding: 0 20% 0 20%;
+        padding: 5% 20% 5% 20%;
         
     }
 
@@ -51,7 +53,6 @@
     nav{
         display: flex;
         justify-content: space-around;
-       
     }
     
     #contenidoModal{
@@ -60,7 +61,10 @@
         align-items: center;
     }
 
-
-
-
+    #mainCompra{
+        padding: 1% 10% 0% 10%;
+    }
     
+    #seguirComprando{
+        padding-left: 10%;
+    }

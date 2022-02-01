@@ -6,49 +6,59 @@ class Producto {
         this.precio = precio;
         this.image = image;
     }
+}
 
-    imprimir() {
-        return `${this.descripcion} $${this.precio}`;
+class carritoClass {
+    constructor(id, producto, cantidad, total) {
+        this.id = id;
+        this.producto = producto;
+        this.cantidad = cantidad;
+        this.total = total;
     }
 
     sumarAlCarrito() {
-        total += this.precio
+        total += this.total
     }
 }
 
 //VARIABLES
-let total = 0
 const productos = []
-productos.push(new Producto(1, "Antifaz para dormir x2", 400, "antifaz.jpg"));
-productos.push(new Producto(2, "Botella acero inoxidable", 700, "botella.jpg"));
-productos.push(new Producto(3, "Buzo", 1000, "buzo.jpg"));
-productos.push(new Producto(4, "funda para iphone", 800, "funda.jpg"));
-productos.push(new Producto(5, "gorro", 500, "gorro.jpeg"));
-productos.push(new Producto(6, "mochila", 1000, "mochila.jpg"));
-productos.push(new Producto(7, "remera manga corta", 500, "remera.jpg"));
-productos.push(new Producto(8, "taza", 300, "taza.jpg"));
-
+let total = 0
 const carrito = []
 
+//Obtener productos desde el archivo productos.json
+fetch('./productos.json')
+    .then(promise => promise.json())
+    .then(data => {
+        //Recorre cada producto del json y lo guarda en la variable producto como objeto
+        data.forEach(element => {
+            productos.push(new Producto(element.id, element.descripcion, element.precio, element.image));
+        })
+        imprimirEnDOM()
+    })
+
+//verifica si esta reservada la variable carrito, si no lo esta lo crea.
 if (localStorage.getItem('carrito') == null) {
     localStorage.setItem('carrito', JSON.stringify([]))
 }
 else {
+    //obtengo los datos del carrito y lo vuelvo a cargar en el listado de objetos para imprimir
     const almacenados = JSON.parse(localStorage.getItem('carrito'))
     for (const objeto of almacenados) {
-        console.log(objeto.id)
-        carrito.push(productos.find(x => x.id == objeto.id))
+        console.log(objeto)
+        //carrito.push(productos.find(x => x.id == objeto.id))
+        carrito.push(new carritoClass(objeto.id, objeto.producto, objeto.cantidad, objeto.total))
     }
+    console.log(carrito)
     imprimirCarrito()
 }
 
+$('.btn-light').hide()
 
-let opcion = 0
-let continuar = true
 
 //IMPRIMIR PRODUCTOS EN EL DOM
 function imprimirEnDOM() {
-    $('#listProductos').empty();
+    $('#listProductos').empty(); //limpia el DOM
     productos.forEach((productosArray) => {
         $('#listProductos').append(`
     <div class="card" style="width: 18rem;">
@@ -56,21 +66,31 @@ function imprimirEnDOM() {
              <div class="card-body">
                  <h5 class="card-title">${productosArray.descripcion}</h5>
                  <p class="card-text">$${productosArray.precio}</p>
-                 <a href="#" id="boton${productosArray.id}" class="btn btn-primary">Agregar +</a>
+                 <a href="#listCarrito" id="boton${productosArray.id}" class="btn btn-primary">Agregar <i class="fas fa-cart-plus"></i></a>
         </div>
     </div>`)
     })
 
-        productos.forEach((productosArray, indice) => {
-            $('#boton' + productosArray.id).click(() => {
-                carrito.push(productos[indice])
-                localStorage.setItem('carrito', JSON.stringify(carrito))
-                imprimirCarrito()
-            })
+    productos.forEach((productosArray) => {
+        $('#boton' + productosArray.id).click(() => {
+            //Si al agregar un producto este ya se encuentra en el carrito, aumenta su cantidad y su precio
+            if (carrito.find(producto => producto.id == productosArray.id)) {
+                let indice = carrito.findIndex(producto => producto.id == productosArray.id)
+                carrito[indice].cantidad++
+                carrito[indice].total += productosArray.precio
+            }
+            //si al agregar un producto éste no se encuentra en el carrito, crea un nuevo objeto en el listado
+            else {
+                carrito.push(new carritoClass(productosArray.id, productosArray, 1, productosArray.precio))
+            }
+            localStorage.setItem('carrito', JSON.stringify(carrito))
+            imprimirCarrito()
         })
+    })
 
 };
 
+//PONER MODO LIGHT, elimina el boton DARK
 $('.btn-light').click(() => {
     $('body').removeClass('modoDark')
     $('body').addClass('modoLight')
@@ -79,6 +99,7 @@ $('.btn-light').click(() => {
 
 });
 
+//PONER MODO DARK, elimina el boton LIGHT
 $('.btn-dark').click(() => {
     $('body').removeClass('modoLight')
     $('body').addClass('modoDark')
@@ -86,9 +107,10 @@ $('.btn-dark').click(() => {
     $('.btn-dark').hide()
 });
 
-$('#contacto').click(() =>{ 
-    $.getJSON("https://randomuser.me/api/", function(respuesta, estado){
-        if(estado == "success"){
+//toma desde la API random User, un nombre y numero al azar, para comunicarse con un "vendedor"
+$('#contacto').click(() => {
+    $.getJSON("https://randomuser.me/api/", function (respuesta, estado) {
+        if (estado == "success") {
             let data = respuesta
             console.log(data.results[0].gender)
             $('#contenidoModal').empty()
@@ -107,83 +129,110 @@ $('#contacto').click(() =>{
     $('main').hide()
 })
 
-$('.btn-close').click(() =>{
+$('.btn-close').click(() => {
     $('.modal').fadeOut()
     $('main').show()
 })
 
+//imprimir el carrito en el DOM
 function imprimirCarrito() {
-            $('#listCarrito').empty()
-            $('#listCarrito').append(
-                `<ul class="list-group">`
-            )
-            total = 0
-            carrito.forEach((carritoArray, indice) => {
-                $('#listCarrito').append(`
-                <li class="list-group-item">${carritoArray.imprimir()} <a href="#" id="delete${indice}" class="btn btn-danger">x</a></li>
+    $('#listCarrito').empty()
+    $('#listCarrito').append(
+        `<ul class="list-group">`
+    )
+    total = 0
+    carrito.forEach((carritoArray, indice) => {
+        $('#listCarrito').append(`
+                <li class="list-group-item">${carritoArray.producto.descripcion} - Cantidad: ${carritoArray.cantidad}
+                <a href="#listCarrito" id="plus${carritoArray.id}" class="btn btn-success"><i class="fas fa-plus"></i></a>
+                <a href="#listCarrito" id="minus${carritoArray.id}" class="btn btn-warning"><i class="fas fa-minus"></i></a> 
+                <a href="#listCarrito" id="delete${carritoArray.id}" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a></li>
                 `)
-                carritoArray.sumarAlCarrito()
+        carritoArray.sumarAlCarrito()
+    })
+    if(total>0){
+        $('#listCarrito').append(`
+        </ul>
+        <h2>Tu total es: $${total}</h2>
+        <a  href="compra.html"><button type="button" class="btn btn-primary btn-lg btn-block">Terminar compra</button></a>
 
+        `)
+    }
 
-                $('#listCarrito li').animate({
-                    fontSize: "1.5em",
-                    },"slow")
-            })
-            $('#listCarrito').append(`
-            </ul>
-            <h2>Tu total es: $${total}</h2>
-            `)
+    carrito.forEach((carritoArray,indice) => {
+        $('#delete' + carritoArray.id).click(() => {
+            plusMinusDeleteProducto('x',indice)
+        })
+        $('#minus' + carritoArray.id).click(() => {
+            plusMinusDeleteProducto('-',indice)
+        })
+        $('#plus' + carritoArray.id).click(() => {
+            plusMinusDeleteProducto('+',indice)
+        })
+    })
+}
 
-            carrito.forEach((carritoArray, indice) => {
-                $('#delete' + indice).click(() => {
-                    carrito.splice([indice],1)
-                    localStorage.setItem('carrito', JSON.stringify(carrito))
-                    imprimirCarrito()
-                })
-            })
-        }
+//Para agregar, dismuir o eliminar cantidades del carrito.
+//OPERADOR: ingresa un '-', un '+' o un 'x'
+//OPERADOR: ingresa el indice del producto a modificar su cantidad
+function plusMinusDeleteProducto(operador,indice){
+    switch(operador){
+        case '-':
+            if(carrito[indice].cantidad ==1){
+                carrito.splice([indice], 1)
+            }
+            else{
+                carrito[indice].cantidad--;
+                carrito[indice].total-=carrito[indice].producto.precio;
+            }
+            break;
+        case '+':
+            carrito[indice].cantidad++;
+            carrito[indice].total+=carrito[indice].producto.precio
+            break;
+        case 'x':
+            carrito.splice([indice], 1);
+    }
+    
+    localStorage.setItem('carrito', JSON.stringify(carrito))
+    imprimirCarrito()
+}
 
+//::::::::::::ORDENA LOS PRODUCTO POR DESCRIPCION/PRECIO::::::::::::::::::::::
 let btnDescripcion = document.getElementById("ordenDescripcion")
 let btnPrecio = document.getElementById("ordenPrecio")
 
-imprimirEnDOM()
-
 btnDescripcion.addEventListener('click', () => {
-            ordenarPorDescripcion()
-            imprimirEnDOM()
-        })
+    ordenarPorDescripcion()
+    imprimirEnDOM()
+})
 
 btnPrecio.addEventListener('click', () => {
-            ordenarPorPrecio()
-            imprimirEnDOM()
-        })
-
-
-
-function resultado() {
-            alert(`El total de sus productos es ${total}`)
-        }
+    ordenarPorPrecio()
+    imprimirEnDOM()
+})
 
 function ordenarPorDescripcion() {
-            productos.sort((o1, o2) => {
-                if (o1.descripcion < o2.descripcion) {
-                    return -1;
-                } else if (o1.descripcion > o2.descripcion) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            });
+    productos.sort((o1, o2) => {
+        if (o1.descripcion < o2.descripcion) {
+            return -1;
+        } else if (o1.descripcion > o2.descripcion) {
+            return 1;
+        } else {
+            return 0;
         }
+    });
+}
 
 function ordenarPorPrecio() {
-            productos.sort((o1, o2) => {
-                if (o1.precio < o2.precio) {
-                    return -1;
-                } else if (o1.precio > o2.precio) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            });
+    productos.sort((o1, o2) => {
+        if (o1.precio < o2.precio) {
+            return -1;
+        } else if (o1.precio > o2.precio) {
+            return 1;
+        } else {
+            return 0;
         }
+    });
+}
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
